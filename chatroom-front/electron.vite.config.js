@@ -15,6 +15,19 @@ export default defineConfig({
         '@': resolve('src/renderer/src')
       }
     },
-    plugins: [vue()]
+    plugins: [vue()],
+    //代理
+    server: {
+      port: 8080,
+      open: true,
+      hmr:true
+    }
+    // server:{
+    //   hmr:true,
+    //   port:10000,
+    //   proxy:{
+
+    //   }
+    // }
   }
 })

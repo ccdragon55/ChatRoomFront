@@ -4,19 +4,34 @@
     <div class="drag">登录</div>
     <el-form ref="form" label-width="80px" @submit.prevent="handleSubmit">
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model="email" type="text" placeholder="请输入邮箱" required clearable style="width: 80%;"></el-input>
+        <el-input
+          v-model="email"
+          type="text"
+          placeholder="请输入邮箱"
+          required
+          clearable
+          style="width: 80%"
+        ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="password" type="password" placeholder="密码" required show-password clearable style="width: 80%;"></el-input>
+        <el-input
+          v-model="password"
+          type="password"
+          placeholder="密码"
+          required
+          show-password
+          clearable
+          style="width: 80%"
+        ></el-input>
       </el-form-item>
       <el-form-item align="center">
         <el-button type="primary" size="mini" @click="handleSubmit">登录</el-button>
       </el-form-item>
 
-      <div class="tips" style="float:left; margin-left: 20%;">
+      <div class="tips" style="float: left; margin-left: 20%">
         <el-link underline="true" @click="retrievePWD">忘记密码</el-link>
       </div>
-      <div class="tips" style="float:right; margin-right: 15%;">
+      <div class="tips" style="float: right; margin-right: 15%">
         <el-link @click="regis">还没有账号？点击注册</el-link>
       </div>
     </el-form>
@@ -24,20 +39,20 @@
 </template>
 
 <script setup>
-import {ref,reactive,getCurrentInstance,nextTick, onMounted} from 'vue'
-import router from '../router';
-import md5 from 'crypto-js/md5';
-import { ElMessage,ElLoading } from 'element-plus';
-import instance from '../axios';
+import { ref, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
+import router from '../router'
+import md5 from 'crypto-js/md5'
+import { ElMessage, ElLoading } from 'element-plus'
+import instance from '../axios'
 import api from '../utils/Api'
-const {proxy} =getCurrentInstance()
-const {ipcRenderer}=require('electron')
+const { proxy } = getCurrentInstance()
+const { ipcRenderer } = require('electron')
 
 // import {window} from 'electron'
 
-const email = ref('');
-const password = ref('');
-const token = ref('');
+const email = ref('')
+const password = ref('')
+const token = ref('')
 const permission = ref('')
 const uid = ref('')
 
@@ -53,68 +68,86 @@ const handleSubmit = async () => {
   // //   screenHeight:screenHeight
   // // })
   // ipcRenderer.send("changeWindowSizeToHomePage")
-  const loadingInstance = ElLoading.service({ fullscreen: true });
+  const loadingInstance = ElLoading.service({ fullscreen: true })
   try {
-    console.log(email.value);
-    console.log(password.value);
-    const newPwd = md5(password.value).toString();
+    console.log(email.value)
+    console.log(password.value)
+    const newPwd = md5(password.value).toString()
     console.log(newPwd)
-      const response = await instance.post('/account/login', {
+    const response = await instance.post(
+      '/account/login',
+      {
         email: email.value,
-        password: newPwd,
-      }, {
+        password: newPwd
+      },
+      {
         headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = response.data.data;
-      console.log(data)
-      localStorage.clear();
-      localStorage.setItem('admin',data.admin)
-      localStorage.setItem('contactStatus',data.contactStatus)
-      localStorage.setItem('joinType',data.joinType)
-      localStorage.setItem('nickName',data.nickName)
-      localStorage.setItem('personalSignature',data.personalSignature)
-      localStorage.setItem('sex',data.sex)
-      localStorage.setItem('token',data.token)
-      localStorage.setItem('userId',data.userId)
-      loadingInstance.close();
-      router.push('/home/chat');
-      ipcRenderer.send("loginSuccess",data.userId)
-    }
-    catch (error) {
-      ElMessage('网络错误')
-      loadingInstance.close();
-      localStorage.clear();
-      localStorage.setItem('userId',"1000")
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    const data = response.data.data
+    console.log(data)
+    localStorage.clear()
+    localStorage.setItem('admin', data.admin)
+    localStorage.setItem('contactStatus', data.contactStatus)
+    localStorage.setItem('joinType', data.joinType)
+    localStorage.setItem('nickName', data.nickName)
+    localStorage.setItem('personalSignature', data.personalSignature)
+    localStorage.setItem('sex', data.sex)
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('userId', data.userId)
+    loadingInstance.close()
 
-      router.push('/home/chat');
-      ipcRenderer.send("loginSuccess","1000")
-    }
-    
-};
+    const avatarUrl = await instance.post(
+      '/file/getAvatar',
+      {
+        userId: data.userId
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    console.log('selfAvatarUrl')
+    console.log(avatarUrl)
+    localStorage.setItem('selfAvatarUrl', avatarUrl.data.data)
+    ipcRenderer.send('saveSelfAvatar', { id: data.userId, url: avatarUrl.data.data })
+    router.push('/home/chat')
+    ipcRenderer.send('loginSuccess', { userId: data.userId, token: data.token })
+  } catch (error) {
+    ElMessage('网络错误')
+    loadingInstance.close()
+    localStorage.clear()
+    localStorage.setItem('userId', '1000')
+
+    router.push('/home/chat')
+    ipcRenderer.send('loginSuccess', { userId: '1000', token: 123456 })
+  }
+}
 
 const retrievePWD = () => {
-  router.push('/forgetpassword');
-};
+  router.push('/forgetpassword')
+}
 
 const regis = () => {
-  router.push('/register');
-  ipcRenderer.send("changeWindowSizeToRegister")
-};
+  router.push('/register')
+  ipcRenderer.send('changeWindowSizeToRegister')
+}
 
-const init=()=>{
+const init = () => {
   // ipcRenderer.send("setLocalStore",{key:'prodDomain',value:proxy.Api.prodDomain})
   // ipcRenderer.send("setLocalStore",{key:'devDomain',value:proxy.Api.devDomain})
   // ipcRenderer.send("setLocalStore",{key:'prodWsDomain',value:proxy.Api.prodWsDomain})
   // ipcRenderer.send("setLocalStore",{key:'devWsDomain',value:proxy.Api.devWsDomain})
-  ipcRenderer.send("setLocalStore",{key:'prodDomain',value:api.prodDomain})
-  ipcRenderer.send("setLocalStore",{key:'devDomain',value:api.devDomain})
-  ipcRenderer.send("setLocalStore",{key:'prodWsDomain',value:api.prodWsDomain})
-  ipcRenderer.send("setLocalStore",{key:'devWsDomain',value:api.devWsDomain})
+  ipcRenderer.send('setLocalStore', { key: 'prodDomain', value: api.prodDomain })
+  ipcRenderer.send('setLocalStore', { key: 'devDomain', value: api.devDomain })
+  ipcRenderer.send('setLocalStore', { key: 'prodWsDomain', value: api.prodWsDomain })
+  ipcRenderer.send('setLocalStore', { key: 'devWsDomain', value: api.devWsDomain })
 }
 
-onMounted(()=>{
+onMounted(() => {
   init()
 })
 </script>
@@ -201,8 +234,8 @@ button:active {
   vertical-align: text-bottom;
 }
 
-.drag{
-  -webkit-app-region:drag;
+.drag {
+  -webkit-app-region: drag;
   text-align: center;
   margin-top: 3%;
   margin-bottom: 3%;

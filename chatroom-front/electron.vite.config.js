@@ -2,6 +2,8 @@ import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import vue from '@vitejs/plugin-vue'
 
+// import { optimizer } from '@electron-toolkit/utils'
+
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()]
@@ -20,7 +22,7 @@ export default defineConfig({
     server: {
       port: 8080,
       open: true,
-      hmr:true
+      hmr: true
     }
     // server:{
     //   hmr:true,
@@ -30,4 +32,12 @@ export default defineConfig({
     //   }
     // }
   }
+  // ,optimizeDeps: {
+  //   include: ['path']
+  // }
+  // ,plugins: [
+  //   optimizer({
+  //     electron: `const { ipcRenderer } = require('electron'); export { ipcRenderer };`
+  //   }),
+  // ]
 })

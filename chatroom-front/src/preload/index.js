@@ -1,6 +1,12 @@
-import { contextBridge ,ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-window.ipcRenderer=ipcRenderer;
+window.ipcRenderer = ipcRenderer
+
+// const path = require('path');
+
+// contextBridge.exposeInMainWorld('electron', {
+//   pathJoin: (...args) => path.join(...args),
+// });
 
 // Custom APIs for renderer
 const api = {}

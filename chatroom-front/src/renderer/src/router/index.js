@@ -12,18 +12,18 @@ import Informs from '@/views/informs/Informs.vue'
 // import Home from '../views/Home.vue'
 
 const router = createRouter({
-  mode: "hash",
+  mode: 'hash',
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
-      name: "Start",
-      redirect: "/login",
+      path: '/',
+      name: 'Start',
+      redirect: '/login'
     },
     {
-      path: "/login",
-      name: "Login",
-      component: () => import('@/views/Login.vue'),
+      path: '/login',
+      name: 'Login',
+      component: () => import('@/views/Login.vue')
     },
     {
       path: '/register',
@@ -39,41 +39,50 @@ const router = createRouter({
       path: '/setPassword',
       name: 'SetPassword',
       component: SetPassword
-    },{
-      path: "/home",
-      name: "Home",
+    },
+    {
+      path: '/home',
+      name: 'Home',
       // redirect: "/chat",
       component: Home,
-      children:[{
-        path: 'profile',
-        name: 'Profile',
-        component: Profile
-      },{
-        path: 'chat',
-        name: 'Chat',
-        component: Chat
-        // components: {
-        //   default:Home,
-        //   homePage:Chat
-        // }
-      },{
-        path: 'friendsManage',
-        name: 'FriendsManage',
-        component: FriendsManage,
-        children:[{
-          path: 'groupChatInfo',
-          name: 'GroupChatInfo',
-          component: GroupChatInfo
-        },{
-          path: 'friendProfile',
-          name: 'FriendProfile',
-          component: FriendProfile
-        }]
-      },{
-        path: 'informs',
-        name: 'Informs',
-        component: Informs,
-      }]
+      children: [
+        {
+          path: 'profile',
+          name: 'Profile',
+          component: Profile
+        },
+        {
+          path: 'chat',
+          name: 'Chat',
+          component: Chat
+          // components: {
+          //   default:Home,
+          //   homePage:Chat
+          // }
+        },
+        {
+          path: 'friendsManage',
+          name: 'FriendsManage',
+          component: FriendsManage,
+          children: [
+            {
+              path: 'groupChatInfo',
+              name: 'GroupChatInfo',
+              component: GroupChatInfo
+            },
+            {
+              path: 'friendProfile',
+              name: 'FriendProfile',
+              component: FriendProfile
+            }
+          ]
+        },
+        {
+          path: 'informs',
+          name: 'Informs',
+          component: Informs
+        }
+      ]
     }
   ]
 })

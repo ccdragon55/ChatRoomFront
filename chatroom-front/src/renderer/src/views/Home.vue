@@ -11,14 +11,14 @@ import Sider from './sider.vue'
 </template>
 
 <style lang="less">
-body{
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   overflow: hidden;
 }
 
-.container{
+.container {
   display: flex;
   // margin: 0px 0px 0px 0px;
   // padding: 0px 0px 0px 0px;
@@ -26,7 +26,7 @@ body{
   height: 100vh;
 }
 
-.sider{
+.sider {
   margin: 0px 0px 0px 0px;
   padding: 0;
   width: 6%;

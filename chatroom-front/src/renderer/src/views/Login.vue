@@ -120,10 +120,10 @@ const handleSubmit = async () => {
     ElMessage('网络错误')
     loadingInstance.close()
     localStorage.clear()
-    localStorage.setItem('userId', '1000')
+    //localStorage.setItem('userId', '1000')
 
-    router.push('/home/chat')
-    ipcRenderer.send('loginSuccess', { userId: '1000', token: 123456 })
+    //router.push('/home/chat')
+    //ipcRenderer.send('loginSuccess', { userId: '1000', token: 123456 })
   }
 }
 
